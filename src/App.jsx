@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 
 import PokemonList from "./components/PokemonList";
+import PokemonChar from "./components/PokemonChar";
 import Pagination from "./components/Pagination";
 import useFetch from "./hooks/useFetch";
 
@@ -9,6 +10,9 @@ import "./App.css";
 function App() {
   const [url, setUrl] = useState(`https://pokeapi.co/api/v2/pokemon`);
   const { data, isLoading, error } = useFetch(url);
+  const [pokemonChar, setPokemonChar] = useState(null);
+  console.log(pokemonChar);
+
   const handleUrl = useCallback(
     (newUrl) => {
       setUrl(newUrl);
@@ -16,13 +20,35 @@ function App() {
     [url]
   );
 
+  const handleLoadPokemon = useCallback(
+    (newUrl) => {
+      fetch(newUrl)
+        .then((res) => res.json())
+        .then((data) => setPokemonChar(data));
+    },
+    [url]
+  );
+
+  const handleClosePokemonChar = useCallback(() => {
+    setPokemonChar(null);
+  }, [url]);
+
   if (isLoading) return <div>Loading Pokemons...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="App">
-      <PokemonList pokemon={data} />
-      <Pagination pokemon={data} handleUrl={handleUrl} />
+      {pokemonChar != null ? (
+        <PokemonChar
+          pokemonChar={pokemonChar}
+          handleClosePokemonChar={handleClosePokemonChar}
+        />
+      ) : (
+        <>
+          <PokemonList pokemon={data} handleLoadPokemon={handleLoadPokemon} />
+          <Pagination pokemon={data} handleUrl={handleUrl} />
+        </>
+      )}
     </div>
   );
 }
