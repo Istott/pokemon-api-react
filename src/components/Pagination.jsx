@@ -3,7 +3,7 @@ import { useState } from "react";
 export default function Pagination({ pokemon, handleUrl }) {
   return (
     <>
-      {pokemon.next && (
+      {!!pokemon.next && (
         <button
           style={{ backgroundColor: "lightBlue", margin: "5px" }}
           onClick={() => handleUrl(pokemon.next)}
@@ -11,7 +11,7 @@ export default function Pagination({ pokemon, handleUrl }) {
           next Page
         </button>
       )}
-      {pokemon.previous && (
+      {!!pokemon.previous && (
         <button
           style={{ backgroundColor: "lightBlue", margin: "5px" }}
           onClick={() => handleUrl(pokemon.previous)}

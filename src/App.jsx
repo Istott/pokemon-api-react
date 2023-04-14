@@ -11,7 +11,6 @@ function App() {
   const [url, setUrl] = useState(`https://pokeapi.co/api/v2/pokemon`);
   const { data, isLoading, error } = useFetch(url);
   const [pokemonChar, setPokemonChar] = useState(null);
-  console.log(pokemonChar);
 
   const handleUrl = useCallback(
     (newUrl) => {
@@ -20,18 +19,15 @@ function App() {
     [url]
   );
 
-  const handleLoadPokemon = useCallback(
-    (newUrl) => {
-      fetch(newUrl)
-        .then((res) => res.json())
-        .then((data) => setPokemonChar(data));
-    },
-    [url]
-  );
+  const handleLoadPokemon = useCallback((newUrl) => {
+    fetch(newUrl)
+      .then((res) => res.json())
+      .then((data) => setPokemonChar(data));
+  }, []);
 
   const handleClosePokemonChar = useCallback(() => {
     setPokemonChar(null);
-  }, [url]);
+  }, []);
 
   if (isLoading) return <div>Loading Pokemons...</div>;
   if (error) return <div>Error: {error.message}</div>;
