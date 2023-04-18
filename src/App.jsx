@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useCallback, useEffect, useState } from "react";
 
+import Header from "./component/Header";
+import PokeCard from "./component/PokeCard";
+import "./App.css";
+// search bar retrieves a poke
+// keep track of results - search history
+// pokemon card
 function App() {
-  const [count, setCount] = useState(0)
+  const [data, setData] = useState();
+  const [pokemonChar, setPokemonChar] = useState(null);
+
+  useEffect(() => {
+    fetch(`https://pokeapi.co/api/v2/pokemon`)
+      .then((res) => res.json())
+      .then((data) => setData(data.results));
+  }, []);
+
+  const handleFetchCharacter = useCallback(
+    (charURL) => {
+      fetch(charURL)
+        .then((res) => res.json())
+        .then((data) => setPokemonChar(data));
+    },
+    [pokemonChar]
+  );
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header pokemonList={data} handleFetchCharacter={handleFetchCharacter} />
+      {!!pokemonChar && <PokeCard pokemonChar={pokemonChar} />}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
